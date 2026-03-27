@@ -1,0 +1,57 @@
+{
+  "login": {
+    "title": "Welcome to Kisan Connect",
+    "subtitle": "Your digital agriculture advisor",
+    "phoneNumber": "Phone Number",
+    "otp": "One Time Password",
+    "sendOtp": "Send Code",
+    "login": "Login",
+    "invalidPhone": "Please enter a valid phone number"
+  },
+  "language": {
+    "title": "Choose your language",
+    "selected": "Selected"
+  },
+  "farmState": {
+    "title": "What is your current farm situation?",
+    "fallow": "No Crop (Fallow)",
+    "fallowDesc": "Preparing land or waiting for next season",
+    "cultivating": "Currently Cultivating",
+    "cultivatingDesc": "Active crop growing on the field",
+    "postHarvest": "Post-Harvest",
+    "postHarvestDesc": "Recently harvested, managing stubble or storage"
+  },
+  "onboarding": {
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish",
+    "phase1": {
+      "title": "Past Crop History",
+      "historyLabel": "What did you grow last season?",
+      "timeWindowLabel": "Approximate date of harvest?"
+    },
+    "phase2": {
+      "title": "Current Crop Status",
+      "cropLabel": "What are you growing now?",
+      "stageLabel": "What is the growth stage?",
+      "irrigationLabel": "How are you irrigating?",
+      "symptomsLabel": "Any visible pests or spots?"
+    },
+    "phase3": {
+      "title": "Future Plan",
+      "nextCropLabel": "What do you plan to grow next?",
+      "targetHarvestLabel": "Target harvest month?"
+    }
+  },
+  "chat": {
+    "placeholder": "Ask your question...",
+    "errorText": "Failed to send message.",
+    "offlineNotice": "You are offline. Messages will send when connection returns."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong.",
+    "retry": "Retry",
+    "offline": "Offline Mode"
+  }
+}
