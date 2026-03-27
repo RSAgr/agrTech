@@ -1,7 +1,7 @@
 import numpy as np
 import pickle
 import os
-
+import pandas as pd
 
 class MLService:
     def __init__(self):
@@ -44,11 +44,21 @@ class MLService:
         temp = data["temperature"]
         humidity = data["humidity"]
         moisture = data["soil_moisture"]
+        soil_type = data.get("soil_type", "unknown")  
+        crop_id = data.get("crop_id", "unknown") 
+        seedling_stage = data.get("seedling_stage", "unknown") 
 
         if self.irrigation_model:
-            X = np.array([[temp, humidity, moisture]])
+            X = pd.DataFrame([{
+                "moi": moisture,
+                "temp": temp,
+                "humidity": humidity,
+                "crop_id": crop_id,
+                "soil_type": soil_type,
+                "seedling_stage": seedling_stage
+            }])
             pred = self.irrigation_model.predict(X)[0]
-            return "needed" if pred == 1 else "not_needed"
+            return "needed" if pred == 1 else "not_needed" # 2 is also there, not sure about the use
 
         # RULE-BASED FALLBACK
         if moisture < 30:
