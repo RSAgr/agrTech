@@ -2,3 +2,5 @@ tasks.txt
 backend/ml/models/*.pkl
 backend/.env
 frontend/node_modules/
+__pycache__/
+*.pyc
