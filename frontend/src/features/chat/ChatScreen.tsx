@@ -6,6 +6,7 @@ import type { ChatMessage } from '../../store/appStore';
 import { apiClient } from '../../services/api/client';
 import { useSpeech } from '../../services/speech/useSpeech';
 import { Button } from '../../components/ui/Button';
+import { marked } from 'marked';
 
 const WelcomeBanner: React.FC = () => {
   const { t } = useTranslation();
@@ -134,7 +135,14 @@ export const ChatScreen: React.FC = () => {
                   : 'bg-white border border-gray-100 text-agri-dark rounded-tl-sm'
               }`}
             >
-              {msg.text}
+              {msg.sender === 'bot' ? (
+                <div
+                  className="prose prose-sm max-w-none text-agri-dark prose-p:leading-relaxed prose-pre:bg-gray-50 prose-pre:border prose-pre:border-gray-200 prose-a:text-agri-green"
+                  dangerouslySetInnerHTML={{ __html: marked.parse(msg.text) as string }}
+                />
+              ) : (
+                <div className="whitespace-pre-wrap">{msg.text}</div>
+              )}
               <div className={`text-[10px] mt-1 ${msg.sender === 'user' ? 'text-white/60 text-right' : 'text-gray-400'}`}>
                 {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>

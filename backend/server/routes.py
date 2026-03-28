@@ -1,6 +1,4 @@
-import asyncio
 import math
-import os
 import random
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -18,8 +16,6 @@ from .validators import (
 )
 
 router = APIRouter()
-
-ML_BASE_URL = os.getenv("ML_BASE_URL", None)
 
 # ── Languages list ────────────────────────────────────────────────────────────
 LANGUAGES = [
@@ -95,14 +91,7 @@ async def submit_phase_3(
 
 
 async def _submit_phase(phase_number: int, _data) -> dict:
-    # ML_ENDPOINT: POST ML_BASE_URL/ml/ingest-profile
-    # After phase 3 completes, forward the full profile to the ML backend.
     # TODO: accumulate phases and send combined profile on phase 3.
-    if ML_BASE_URL:
-        print(
-            f"[ML_STUB] Would POST {ML_BASE_URL}/ml/ingest-profile "
-            f"for phase {phase_number}"
-        )
     return {"ok": True, "phase": phase_number}
 
 
@@ -111,52 +100,51 @@ async def handle_query(
     data: QueryRequest,
     _user: dict = Depends(get_current_user),
 ):
-    # ══════════════════════════════════════════════════════════════════════
-    # ML_ENDPOINT: POST ML_BASE_URL/ml/query
-    #
-    # Forward the following to ML backend:
-    #   query        — farmer's question (string)
-    #   lang         — language code (e.g. 'hi', 'te')
-    #   category     — farm state ('fallow' | 'cultivating' | 'post-harvest')
-    #   farmContext  — full onboarding data (phase1, phase2, phase3)
-    #   userId       — farmer identifier
-    #
-    # Expected ML response: { answer, lang, confidence, source }
-    # ══════════════════════════════════════════════════════════════════════
-    if ML_BASE_URL:
-        print(f"[ML_ENDPOINT] Would POST {ML_BASE_URL}/ml/query")
-        # Uncomment when ML server is ready:
-        # import httpx
-        # async with httpx.AsyncClient() as client:
-        #     ml_res = await client.post(
-        #         f"{ML_BASE_URL}/ml/query",
-        #         json={
-        #             "query": data.query,
-        #             "lang": data.lang,
-        #             "farm_context": data.farmContext,
-        #             "user_id": data.userId,
-        #         },
-        #         headers={"x-api-key": os.getenv("ML_API_KEY", "")},
-        #     )
-        #     ml_data = ml_res.json()
-        #     return {
-        #         "answer": ml_data["answer"],
-        #         "lang": ml_data["lang"],
-        #         "source": ml_data["source"],
-        #         "confidence": ml_data["confidence"],
-        #     }
+    from ml.mlEndpoint import MLService
+    from genAI.llmCalling import generate_study_plan
 
-    # Mock response (remove when ML_BASE_URL is active)
-    await asyncio.sleep(0.8)
-    return {
-        "answer": (
+    ml_result = None
+    farm_ctx = data.farmContext or {}
+
+    # Run ML prediction if sensor data is available in farmContext
+    if isinstance(farm_ctx, dict) and "temperature" in farm_ctx:
+        ml_service = MLService()
+        ml_result = ml_service.predict(farm_ctx)
+
+    # Build a summary string for the LLM
+    summary_parts = [f"Farmer query: {data.query}"]
+    if data.category:
+        summary_parts.append(f"Farm state: {data.category}")
+    if data.lang:
+        summary_parts.append(f"Language: {data.lang}")
+    if ml_result:
+        summary_parts.append(
+            f"ML predictions — irrigation: {ml_result['irrigation']}, "
+            f"disease risk: {ml_result['disease_risk']}, "
+            f"crop stress: {ml_result['crop_stress']}"
+        )
+    if isinstance(farm_ctx, dict):
+        ctx_str = ", ".join(f"{k}: {v}" for k, v in farm_ctx.items())
+        if ctx_str:
+            summary_parts.append(f"Farm context: {ctx_str}")
+
+    summary = "\n".join(summary_parts)
+
+    try:
+        answer = generate_study_plan(summary)
+    except Exception:
+        answer = (
             f'Advisory for "{data.query}" — crop: {data.category}, '
             f'lang: {data.lang or "en"}. '
-            f"[Mock — connect ML backend via ML_BASE_URL in .env]"
-        ),
+            f"[GenAI unavailable — showing ML results only]"
+        )
+
+    return {
+        "answer": answer,
         "lang": data.lang or "en",
-        "source": "mock-model",
+        "source": "ml+genai" if ml_result else "genai",
         "confidence": 0.95,
+        "mlPredictions": ml_result,
     }
 
 
@@ -170,21 +158,11 @@ async def handle_feedback(
     data: FeedbackRequest,
     _user: dict = Depends(get_current_user),
 ):
-    if ML_BASE_URL:
-        print(f"[ML_ENDPOINT] Would POST {ML_BASE_URL}/ml/feedback")
-        # Uncomment when ML server is ready:
-        # import httpx
-        # async with httpx.AsyncClient() as client:
-        #     await client.post(
-        #         f"{ML_BASE_URL}/ml/feedback",
-        #         json=data.model_dump(),
-        #         headers={"x-api-key": os.getenv("ML_API_KEY", "")},
-        #     )
-    else:
-        print(
-            f'[ML_STUB] Feedback received from {data.userId}: '
-            f'"{data.farmerFollowup}"'
-        )
+    # TODO: persist feedback to a database for RLHF
+    print(
+        f'[Feedback] from {data.userId}: "{data.farmerFollowup}" '
+        f'(rating: {data.rating})'
+    )
     return {"ok": True, "logged": True}
 
 
