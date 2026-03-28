@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Mic, Send, Square } from 'lucide-react';
+import { Mic, Send, Square, Camera, X } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
-import type { ChatMessage } from '../../store/appStore';
+import type { ChatMessage, Language } from '../../store/appStore';
 import { apiClient } from '../../services/api/client';
 import { useSpeech } from '../../services/speech/useSpeech';
 import { Button } from '../../components/ui/Button';
@@ -33,14 +33,30 @@ const WelcomeBanner: React.FC = () => {
 };
 
 export const ChatScreen: React.FC = () => {
-  const { t } = useTranslation();
-  const { messages, addMessage, isOffline, language, farmState, onboardingData, userId } = useAppStore();
+  const { t, i18n } = useTranslation();
+  const { messages, addMessage, isOffline, language, setLanguage, farmState, onboardingData, userId } = useAppStore();
   const [input, setInput] = useState('');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [lastBotMsg, setLastBotMsg] = useState<string | null>(null);
   const [lastUserMsg, setLastUserMsg] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const { isListening, transcript, startListening, stopListening, supported, resetTranscript } = useSpeech(language);
+
+  // Define supported languages for the dropdown
+  const SUPPORTED_LANGUAGES = [
+    { code: 'en', label: 'English' },
+    { code: 'hi', label: 'Hindi' },
+    { code: 'bn', label: 'Bengali' },
+    { code: 'te', label: 'Telugu' },
+    { code: 'mr', label: 'Marathi' },
+    { code: 'ta', label: 'Tamil' },
+    { code: 'kn', label: 'Kannada' },
+    { code: 'gu', label: 'Gujarati' },
+    { code: 'pa', label: 'Punjabi' },
+    { code: 'ml', label: 'Malayalam' },
+  ] as const;
 
   useEffect(() => {
     if (isListening && transcript) setInput(transcript);
@@ -50,15 +66,31 @@ export const ChatScreen: React.FC = () => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result as string);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   const handleSend = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!input.trim() || isOffline || loading) return;
+    if ((!input.trim() && !selectedImage) || isOffline || loading) return;
     if (isListening) stopListening();
 
     const text = input.trim();
-    const userMsg: ChatMessage = { id: Date.now().toString(), text, sender: 'user', timestamp: Date.now() };
+    const currentImage = selectedImage;
+    const userMsg: ChatMessage = { id: Date.now().toString(), text, image: currentImage || undefined, sender: 'user', timestamp: Date.now() };
     addMessage(userMsg);
     setInput('');
+    setSelectedImage(null);
     resetTranscript();
     setLoading(true);
 
@@ -86,6 +118,7 @@ export const ChatScreen: React.FC = () => {
         farmState || 'fallow',
         onboardingData,
         userId || 'anonymous',
+        currentImage || undefined
       );
       const botText = res.answer || '...';
       setLastBotMsg(botText);
@@ -97,18 +130,34 @@ export const ChatScreen: React.FC = () => {
     }
   };
 
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newLang = e.target.value as Language;
+    setLanguage(newLang);
+    i18n.changeLanguage(newLang);
+    apiClient.setLanguage(newLang);
+  };
+
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
       {/* Context chips */}
-      <div className="shrink-0 flex gap-2 flex-wrap px-1 py-2">
-        <span className="text-xs bg-agri-green/10 text-agri-green px-3 py-1 rounded-full border border-agri-green/20 font-medium">
+      <div className="shrink-0 flex gap-2 flex-wrap px-1 py-2 items-center">
+        <span className="text-xs bg-agri-green/10 text-agri-green px-3 py-1.5 rounded-full border border-agri-green/20 font-medium">
           🌱 {farmState ?? 'Farm'}
         </span>
-        <span className="text-xs bg-agri-olive/10 text-agri-olive px-3 py-1 rounded-full border border-agri-olive/20 font-medium">
-          🌐 {language?.toUpperCase() ?? 'EN'}
-        </span>
+        
+        <select
+          value={language}
+          onChange={handleLanguageChange}
+          className="text-xs bg-agri-olive/10 text-agri-olive px-8 py-1.5 rounded-full border border-agri-olive/20 font-medium outline-none cursor-pointer appearance-none shadow-sm flex-1 max-w-[140px]"
+          style={{ backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpolyline points=\'6 9 12 15 18 9\'%3E%3C/polyline%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center', backgroundSize: '12px' }}
+        >
+          {SUPPORTED_LANGUAGES.map(l => (
+            <option key={l.code} value={l.code}>🌐 {l.label}</option>
+          ))}
+        </select>
+
         {onboardingData.phase2?.crop && (
-          <span className="text-xs bg-agri-green/10 text-agri-green px-3 py-1 rounded-full border border-agri-green/20 font-medium">
+          <span className="text-xs bg-agri-green/10 text-agri-green px-3 py-1.5 rounded-full border border-agri-green/20 font-medium">
             🌾 {onboardingData.phase2.crop}
           </span>
         )}
@@ -135,6 +184,9 @@ export const ChatScreen: React.FC = () => {
                   : 'bg-white border border-gray-100 text-agri-dark rounded-tl-sm'
               }`}
             >
+              {msg.image && (
+                <img src={msg.image} alt="Upload" className="max-w-full h-auto rounded-lg mb-2 shadow-sm" />
+              )}
               {msg.sender === 'bot' ? (
                 <div
                   className="prose prose-sm max-w-none text-agri-dark prose-p:leading-relaxed prose-pre:bg-gray-50 prose-pre:border prose-pre:border-gray-200 prose-a:text-agri-green"
@@ -165,12 +217,32 @@ export const ChatScreen: React.FC = () => {
 
       {/* Input */}
       <div className="shrink-0 border-t border-gray-100 bg-white/80 backdrop-blur-sm p-3">
+        {selectedImage && (
+          <div className="mb-3 relative inline-block">
+            <img src={selectedImage} alt="Preview" className="h-20 w-20 object-cover rounded-lg shadow-sm border border-gray-200" />
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow hover:bg-red-600 z-10"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        )}
         {isOffline && (
           <div className="text-center text-sm text-orange-600 bg-orange-50 border border-orange-200 rounded-full py-1.5 px-4 mb-2 font-medium">
             ⚠️ {t('chat.offlineNotice')}
           </div>
         )}
         <form onSubmit={handleSend} className="flex gap-2 items-end">
+          <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageSelect} className="hidden" />
+          <Button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isOffline || loading}
+            className="w-12 h-12 !px-0 !py-0 shrink-0 rounded-full flex items-center justify-center border-gray-200 bg-white text-gray-500 hover:text-agri-green hover:bg-agri-green/10"
+          >
+            <Camera size={20} />
+          </Button>
           <div className="flex-1 relative">
             <textarea
               value={input}
@@ -200,7 +272,7 @@ export const ChatScreen: React.FC = () => {
           </div>
           <Button
             type="submit"
-            disabled={!input.trim() || isOffline || loading}
+            disabled={(!input.trim() && !selectedImage) || isOffline || loading}
             className="w-12 h-12 !px-0 !py-0 shrink-0 rounded-full flex items-center justify-center"
           >
             <Send size={20} />
