@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base ─────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  
+  body {
+    @apply bg-agri-offwhite text-agri-dark font-sans antialiased;
+    overflow-x: hidden;
+  }
+  
+  a, button, [role="button"] { cursor: pointer; }
+}
+
+
+
+/* ─── Components ────────────────────────── */
+@layer components {
+  .btn-primary {
+    @apply relative overflow-hidden bg-agri-green text-white min-h-[52px] rounded-full px-8 font-semibold
+           shadow-lg transition-all duration-300 flex items-center justify-center gap-2
+           hover:bg-agri-light hover:shadow-[0_8px_30px_rgba(26,86,50,0.35)] hover:-translate-y-0.5
+           active:translate-y-0 active:shadow-md disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-primary::after {
+    content: '';
+    @apply absolute inset-0 bg-white/20 opacity-0 rounded-full transition-opacity duration-300;
+  }
+  
+  .btn-primary:hover::after { opacity: 1; }
+  
+  .btn-secondary {
+    @apply relative overflow-hidden bg-white/80 backdrop-blur-sm text-agri-green border-2 border-agri-green
+           min-h-[52px] rounded-full px-8 font-semibold shadow-soft transition-all duration-300
+           flex items-center justify-center gap-2
+           hover:bg-agri-green hover:text-white hover:-translate-y-0.5
+           active:translate-y-0;
+  }
+  
+  .card {
+    @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft p-5 border border-white/60
+           transition-all duration-300;
+  }
+  
+  .card-interactive {
+    @apply card cursor-pointer
+           hover:shadow-[0_16px_48px_rgba(26,86,50,0.15)]
+           hover:-translate-y-1 hover:border-agri-green/30;
+  }
+  
+  .card-interactive.selected {
+    @apply border-2 border-agri-green bg-agri-green/5
+           shadow-[0_8px_32px_rgba(26,86,50,0.20)];
+  }
+  
+  .input {
+    @apply bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl w-full
+           min-h-[52px] px-5 py-3 text-agri-dark
+           focus:ring-2 focus:ring-agri-green/40 focus:border-agri-green outline-none
+           transition-all duration-200 shadow-sm
+           hover:border-agri-green/40;
+  }
+  
+  .glass-panel {
+    @apply bg-white/60 backdrop-blur-xl rounded-3xl border border-white/70
+           shadow-[0_20px_60px_rgba(0,0,0,0.08)];
+  }
+  
+  .page-enter {
+    animation: pageEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  .floating {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .floating-delayed {
+    animation: float 6s ease-in-out 2s infinite;
+  }
+}
+
+/* ─── Keyframes ─────────────────────────── */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-14px) rotate(3deg); }
+  66%       { transform: translateY(-6px) rotate(-2deg); }
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes ripple {
+  to { transform: scale(4); opacity: 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(26, 86, 50, 0.3); }
+  50%       { box-shadow: 0 0 0 12px rgba(26, 86, 50, 0); }
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ─── Animated heroBg ───────────────────── */
+.hero-bg {
+  background: linear-gradient(135deg, #0d3320 0%, #1a5632 30%, #2d7a4c 55%, #4a9a6a 75%, #6b705c 100%);
+  background-size: 300% 300%;
+  animation: gradientShift 12s ease infinite;
+}
+
+/* ─── Ripple button effect ──────────────── */
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  background: rgba(255, 255, 255, 0.4);
+  animation: ripple 0.7s linear;
+  pointer-events: none;
+}
+
+/* ─── Scrollbar ─────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #1a5632; border-radius: 999px; }
+
+/* ─── Chat Bubbles ──────────────────────── */
+.chat-bubble-enter {
+  animation: pageEnter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
