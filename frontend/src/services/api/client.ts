@@ -67,10 +67,11 @@ export const apiClient = {
     category: string,
     farmContext?: OnboardingData,
     userId?: string,
+    imageBase64?: string,
   ) =>
     fetchWithAuth('/query', {
       method: 'POST',
-      body: JSON.stringify({ query, modelId, lang, category, farmContext, userId }),
+      body: JSON.stringify({ query, modelId, lang, category, farmContext, userId, imageBase64 }),
     }),
 
   // ── ML_ENDPOINT: POST /api/v1/feedback  →  proxied to ML_BASE_URL/ml/feedback

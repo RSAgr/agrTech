@@ -24,6 +24,7 @@ export interface OnboardingData {
 export interface ChatMessage {
   id: string;
   text: string;
+  image?: string;
   sender: 'user' | 'bot';
   timestamp: number;
 }
