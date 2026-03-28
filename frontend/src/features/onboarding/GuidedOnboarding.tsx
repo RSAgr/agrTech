@@ -66,7 +66,7 @@ export const GuidedOnboardingScreen: React.FC = () => {
             />
             <InputField
               label={t('onboarding.phase1.timeWindowLabel')}
-              type="month"
+              type="date"
               value={phase1.timeWindow}
               onChange={(e) => setPhase1Local({ ...phase1, timeWindow: e.target.value })}
             />
@@ -112,7 +112,7 @@ export const GuidedOnboardingScreen: React.FC = () => {
             />
             <InputField
               label={t('onboarding.phase3.targetHarvestLabel')}
-              type="month"
+              type="date"
               value={phase3.targetHarvest}
               onChange={(e) => setPhase3Local({ ...phase3, targetHarvest: e.target.value })}
             />
