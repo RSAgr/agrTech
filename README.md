@@ -1,4 +1,4 @@
-# 🌱 Kisan Connect
+# Kisan Connect
 
 <p align="center">
   <img src="https://img.shields.io/badge/Kisan%20Connect-AI%20Powered%20Smart%20Farming-2E8B57?style=for-the-badge&logo=leaflet&logoColor=white" />
@@ -34,7 +34,7 @@
 
 ---
 
-## ✨ Overview
+## Overview
 
 Kisan Connect is a mobile-first **Progressive Web App (PWA)** designed to help farmers make smarter agricultural decisions using **Machine Learning**, **Generative AI**, and **multilingual interaction**.
 
@@ -44,7 +44,7 @@ The goal is simple: make advanced farming intelligence easy to access, easy to u
 
 ---
 
-## 🎯 What Makes It Different
+## What Makes It Different
 
 Kisan Connect is built around one core idea: **farm advice should be understandable, timely, and profitable**.
 
@@ -60,9 +60,9 @@ It focuses on:
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
-### 🧠 Hybrid Intelligence: ML + GenAI
+### Hybrid Intelligence: ML + GenAI
 
 Kisan Connect combines predictive ML models with Gemini-powered generative AI.
 
@@ -74,7 +74,7 @@ Kisan Connect combines predictive ML models with Gemini-powered generative AI.
 * GenAI converts those predictions into natural, easy-to-understand advice
 * The result is both **accurate** and **farmer-friendly**
 
-### 🌍 Multilingual Support
+### Multilingual Support
 
 Supports **10 Indian languages**:
 
@@ -82,7 +82,7 @@ Supports **10 Indian languages**:
 
 This makes the system accessible to farmers who are more comfortable in their native language.
 
-### 📸 Multimodal Input
+### Multimodal Input
 
 The app supports more than just text.
 
@@ -93,7 +93,7 @@ The app supports more than just text.
 
 This makes the platform practical in real farming environments where typing long inputs is not always ideal.
 
-### 📱 Mobile-First PWA
+### Mobile-First PWA
 
 Kisan Connect is built as a **Progressive Web App**, so it feels lightweight, installable, and easy to use on phones.
 
@@ -102,7 +102,7 @@ Kisan Connect is built as a **Progressive Web App**, so it feels lightweight, in
 * suitable for rural and field usage
 * fast and responsive across devices
 
-### 🎨 Modern UI/UX
+### Modern UI/UX
 
 The interface is designed to feel clean, smooth, and premium.
 
@@ -111,7 +111,7 @@ The interface is designed to feel clean, smooth, and premium.
 * responsive layout
 * guided onboarding for better personalization
 
-### 🔁 Continuous Learning Loop
+### Continuous Learning Loop
 
 The system can evolve over time through feedback and usage patterns.
 
@@ -121,9 +121,9 @@ The system can evolve over time through feedback and usage patterns.
 
 ---
 
-## 🧠 In Progress and Future Features
+## In Progress and Future Features
 
-### 🌾 Profit-Based Crop Recommendation
+### Profit-Based Crop Recommendation
 
 One of the most important upcoming features is **crop prediction based on profit margin**.
 
@@ -140,7 +140,7 @@ This helps farmers answer a better question:
 
 **Not just “What can I grow?” but “What will be most profitable to grow right now?”**
 
-### 🌦️ Weather API Integration
+### Weather API Integration
 
 The ML model is being enhanced with live weather data so predictions become more dynamic and realistic.
 
@@ -154,7 +154,7 @@ Planned weather-aware factors include:
 
 This will allow the system to update recommendations based on changing environmental conditions, improving irrigation advice, disease prediction, and crop stress estimation.
 
-### 📡 IoT Sensor Integration
+### IoT Sensor Integration
 
 Kisan Connect is also being designed to work with IoT-based farm sensors.
 
@@ -168,7 +168,7 @@ Possible sensor inputs include:
 
 This will allow the platform to move from general prediction to **field-specific decision making**.
 
-### 🧬 Self-Improving Advisory System
+### Self-Improving Advisory System
 
 By combining:
 
@@ -180,7 +180,7 @@ the system can continuously refine its recommendations and become more accurate 
 
 ---
 
-## 🚀 Future Vision
+## Future Vision
 
 Kisan Connect is being shaped into a complete smart farming platform that can help farmers with:
 
@@ -196,7 +196,7 @@ The long-term goal is to make farming guidance more intelligent, more accessible
 
 ---
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 ### Frontend
 
@@ -223,7 +223,7 @@ The long-term goal is to make farming guidance more intelligent, more accessible
 
 ---
 
-## 🎮 Setup
+## Setup
 
 ### Backend
 
@@ -280,7 +280,7 @@ http://localhost:5173
 
 ---
 
-## 🧭 How It Works
+## How It Works
 
 1. The user enters farm details such as location, soil type, and crop context.
 2. ML models analyze the input and generate predictions.
@@ -290,7 +290,7 @@ http://localhost:5173
 
 ---
 
-## 📱 Application Walkthrough
+## Application Walkthrough
 
 Once both servers are running, here is how you can evaluate the platform:
 
@@ -306,7 +306,7 @@ Once both servers are running, here is how you can evaluate the platform:
 
 ---
 
-## 🏆 Why This Project Stands Out
+## Why This Project Stands Out
 
 * Solves a real agricultural problem
 * Combines ML and GenAI in one workflow
@@ -317,7 +317,7 @@ Once both servers are running, here is how you can evaluate the platform:
 
 ---
 
-## 💡 Impact Goal
+## Impact Goal
 
 Kisan Connect is not just about automation.
 
